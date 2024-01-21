@@ -6,16 +6,18 @@ from util import linear, linear_deriv, tanh, tanh_deriv, relu, relu_deriv
 # we will do XW + b. 
 # X be [Examples, Dimensions]
 def initialize_weights(in_size,out_size,params,name=''):
-    W, b = None, None
-    
+    # Xavier initialization uniform random distribution in [-a, a]
+    # variance = (a-(a))^2/12 = 2/(in_size + out_size)
+    a = np.sqrt(6 / (in_size+out_size))
+    W = np.random.uniform(-1*a, a, (in_size, out_size))
+    b = np.zeros(out_size)
     params['W' + name] = W
     params['b' + name] = b
 
 # x is a matrix
 # a sigmoid activation function
 def sigmoid(x):
-    res = None
-    return res
+    return 1 / (1 + np.exp(-x))
 
 def forward(X,params,name='',activation=sigmoid):
     """
