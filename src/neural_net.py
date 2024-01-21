@@ -7,7 +7,7 @@ from util import linear, linear_deriv, tanh, tanh_deriv, relu, relu_deriv
 # X be [Examples, Dimensions]
 def initialize_weights(in_size,out_size,params,name=''):
     # Xavier initialization uniform random distribution in [-a, a]
-    # variance = (a-(a))^2/12 = 2/(in_size + out_size)
+    # variance = (a-(-a))^2/12 = 2/(in_size + out_size)
     a = np.sqrt(6 / (in_size+out_size))
     W = np.random.uniform(-1*a, a, (in_size, out_size))
     b = np.zeros(out_size)
@@ -33,20 +33,18 @@ def forward(X,params,name='',activation=sigmoid):
     # get the layer parameters
     W = params['W' + name]
     b = params['b' + name]
-    
-
+    pre_act = np.dot(X, W) + b
+    post_act = activation(pre_act)
     # store the pre-activation and post-activation values
     # these will be important in backprop
     params['cache_' + name] = (X, pre_act, post_act)
-
     return post_act
 
 # x is [examples,classes]
 # softmax should be done for each row
 def softmax(x):
-    res = None
-    
-    return res
+    exp_x = np.exp(x - np.max(x, axis=1, keepdims=True))
+    return exp_x / np.sum(exp_x, axis=1, keepdims=True)
 
 # compute total loss and accuracy
 # y is size [examples,classes]
