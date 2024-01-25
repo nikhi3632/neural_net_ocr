@@ -1,10 +1,13 @@
 # Forward propagation, Backward propagation, Training Loop and Numerical Gradient Checker. 
 
-import numpy as np
 from neural_net import initialize_weights, forward, backwards, \
     sigmoid, sigmoid_deriv, softmax, compute_loss_and_acc, get_random_batches
 from util import linear_deriv
 import copy
+import warnings
+warnings.filterwarnings('ignore')
+import numpy as np
+np.random.seed(42)
 
 # Generate fake data
 g0 = np.random.multivariate_normal([3.6, 40],[[0.05, 0],[0, 10]], 10)
@@ -26,31 +29,30 @@ params = {}
 # initialize a layer
 initialize_weights(2, 25, params, 'layer1')
 initialize_weights(25, 4, params, 'output')
-assert(params['W + layer1'].shape == (2,25))
-assert(params['b + layer1'].shape == (25,))
+assert(params['W' + 'layer1'].shape == (2,25))
+assert(params['b' + 'layer1'].shape == (25,))
 
 #expect 0, [0.05 to 0.12]
-print("{}, {:.2f}".format(params['blayer1'].sum(), params['W + layer1'].std()**2))
-print("{}, {:.2f}".format(params['boutput'].sum(), params['W + output'].std()**2))
+print("{}, {:.2f}".format(params['blayer1'].sum(), params['W' + 'layer1'].std()**2))
+print("{}, {:.2f}".format(params['boutput'].sum(), params['W' + 'output'].std()**2))
 
 # implement sigmoid
 test = sigmoid(np.array([-1000, 1000]))
 print('should be zero and one\t', test.min(), test.max())
 # implement forward
 h1 = forward(x, params, 'layer1')
-print(h1.shape)
+# print(h1.shape)
 
 # implement softmax
 probs = forward(h1, params, 'output', softmax)
 # make sure to understand these values!
 # positive, ~1, ~1, (40,4)
-print(probs.min(), min(probs.sum(1)), max(probs.sum(1)), probs.shape)
+# print(probs.min(), min(probs.sum(1)), max(probs.sum(1)), probs.shape)
 
 # implement compute_loss_and_acc
 loss, acc = compute_loss_and_acc(y, probs)
-# should be around 65.8 and 0.25
 # if it is not, check softmax!
-print("{}, {:.2f}".format(loss, acc))
+# print("{}, {:.2f}".format(loss, acc))
 
 # the derivative of cross-entropy(softmax(x)) is probs - 1[correct actions]
 delta1 = probs
@@ -71,7 +73,7 @@ for k, v in sorted(list(params.items())):
 
 batches = get_random_batches(x, y, 5)
 # print batch sizes
-print([_[0].shape[0] for _ in batches])
+# print([batch[0].shape[0] for batch in batches])
 batch_num = len(batches)
 
 def compute_gradient(params, name, eta):
@@ -105,18 +107,25 @@ for itr in range(max_iters):
     if itr % 100 == 0:
         print("itr: {:02d} \t loss: {:.2f} \t acc : {:.2f}".format(itr, total_loss, avg_acc))
 
-
 # Do a forward & backward pass of the dataset here to get params populated with the gradient expected
 xb, yb = batches[0]
 out = forward(xb, params, "layer1", sigmoid)
 probs = forward(out, params, "output", softmax)
 loss, acc = compute_loss_and_acc(yb, probs)
 delta = probs - yb
-delta = backwards(delta, params, "output", linear_deriv)
-delta = backwards(delta, params, "layer1", sigmoid_deriv)
+delta1 = backwards(delta, params, "output", linear_deriv)
+delta2 = backwards(delta1, params, "layer1", sigmoid_deriv)
 
 # save the old params and the gradients that are just computed
 params_orig = copy.deepcopy(params)
+
+# Gradient obtained from Backpropagation
+h1 = forward(x, params_orig, 'layer1', sigmoid)
+probs = forward(h1, params_orig, 'output', softmax)
+delta1 = probs - y
+delta2 = backwards(delta1, params_orig, 'output', linear_deriv)
+backwards(delta2, params_orig, 'layer1', sigmoid_deriv)
+
 def forward_pass_loss(params):
     h1 = forward(x, params, 'layer1', sigmoid)
     probs = forward(h1, params, 'output', softmax)
@@ -125,7 +134,7 @@ def forward_pass_loss(params):
 
 # Get the same result with numerical gradients instead of using the analytical gradients computed from the chain rule.
 # Add epsilon offset to each element in the weights, and compute the numerical gradient of the loss with central differences. 
-# Central differences is just f(x + eps)−f(x - eps)/(2*eps).
+# Central differences is just (f(x + eps)−f(x - eps))/(2*eps).
 # This needs to be done for each scalar dimension in all of the weights independently.
 eps = 1e-6
 for k, v in params.items():
@@ -169,4 +178,5 @@ for k in params.keys():
         print('{} {:.2e}'.format(k, err))
         total_error += err
 # should be less than 1e-4
+assert total_error < 1e-4   
 print('total {:.2e}'.format(total_error))

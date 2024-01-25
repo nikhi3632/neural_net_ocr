@@ -16,7 +16,7 @@ def initialize_weights(in_size, out_size, params, name = ''):
 # x is a matrix
 # a sigmoid activation function
 def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
+    return 1.0 / (1.0 + np.exp(-x))
 
 def forward(X, params, name = '', activation = sigmoid):
     """
