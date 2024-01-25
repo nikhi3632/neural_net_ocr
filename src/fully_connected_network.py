@@ -4,6 +4,7 @@ import numpy as np
 from neural_net import initialize_weights, forward, backwards, \
     sigmoid, sigmoid_deriv, softmax, compute_loss_and_acc, get_random_batches
 from util import linear_deriv
+import copy
 
 # Generate fake data
 g0 = np.random.multivariate_normal([3.6, 40],[[0.05, 0],[0, 10]], 10)
@@ -29,8 +30,8 @@ assert(params['W + layer1'].shape == (2,25))
 assert(params['b + layer1'].shape == (25,))
 
 #expect 0, [0.05 to 0.12]
-print("{}, {:.2f}".format(params['blayer1'].sum(), params['Wlayer1'].std()**2))
-print("{}, {:.2f}".format(params['boutput'].sum(), params['Woutput'].std()**2))
+print("{}, {:.2f}".format(params['blayer1'].sum(), params['W + layer1'].std()**2))
+print("{}, {:.2f}".format(params['boutput'].sum(), params['W + output'].std()**2))
 
 # implement sigmoid
 test = sigmoid(np.array([-1000, 1000]))
@@ -73,9 +74,9 @@ batches = get_random_batches(x, y, 5)
 print([_[0].shape[0] for _ in batches])
 batch_num = len(batches)
 
-def compute_gradients(params, name, learning_rate):
-    params['W' + name] -= learning_rate*params['grad_W' + name]
-    params['b' + name] -= learning_rate*params['grad_b' + name]
+def compute_gradient(params, name, eta):
+    params['W' + name] -= eta*params['grad_W' + name]
+    params['b' + name] -= eta*params['grad_b' + name]
 
 # TRAINING LOOP
 max_iters = 500
@@ -87,25 +88,41 @@ for itr in range(max_iters):
     for xb,yb in batches:
         pass
         # forward
-
+        h1 = forward(xb, params, 'layer1')
+        probs = forward(h1, params, 'output', softmax)
         # loss
+        loss, acc = compute_loss_and_acc(yb, probs)
         # be sure to add loss and accuracy to epoch totals 
-
+        total_loss += loss
+        avg_acc += acc/batch_num
         # backward
-
+        delta1 = probs - yb
+        delta2 = backwards(delta1, params, 'output', linear_deriv)
+        backwards(delta2, params, 'layer1', sigmoid_deriv)
         # apply gradient
-
+        compute_gradient(params, 'output', learning_rate)
+        compute_gradient(params, 'layer1', learning_rate)
         
     if itr % 100 == 0:
-        print("itr: {:02d} \t loss: {:.2f} \t acc : {:.2f}".format(itr,total_loss,avg_acc))
+        print("itr: {:02d} \t loss: {:.2f} \t acc : {:.2f}".format(itr, total_loss, avg_acc))
 
 
 # Do a forward & backward pass of the dataset here to get params populated with the gradient expected
-
+xb, yb = batches[0]
+out = forward(xb, params, "layer1", sigmoid)
+probs = forward(out, params, "output", softmax)
+loss, acc = compute_loss_and_acc(yb, probs)
+delta = probs - yb
+delta = backwards(delta, params, "output", linear_deriv)
+delta = backwards(delta, params, "layer1", sigmoid_deriv)
 
 # save the old params and the gradients that are just computed
-import copy
 params_orig = copy.deepcopy(params)
+def forward_pass_loss(params):
+    h1 = forward(x, params, 'layer1', sigmoid)
+    probs = forward(h1, params, 'output', softmax)
+    loss, _ = compute_loss_and_acc(y, probs)
+    return loss
 
 # get the same result with numerical gradients
 eps = 1e-6
@@ -119,16 +136,33 @@ for k,v in params.items():
     #   get the loss
     #   compute derivative with central diffs
     #   store that inside params
-
-    grad_v = np.zeros_like(v)
-
-    params['grad_' + k] = grad_v
+    if len(params[k].shape) > 1: # Weights
+        for r in range(params[k].shape[0]):
+            for c in range(params[k].shape[1]):
+                value = params[k][r, c].copy()
+                params[k][r, c] = value + eps
+                loss1 = forward_pass_loss(params)
+                params[k][r, c] = value - eps
+                loss2 = forward_pass_loss(params)
+                params[k][r, c] = value
+                # Compute numerical gradient
+                params['grad_' + k][r, c] = (loss1 - loss2) / (2*eps)
+    else:  # Bias
+        for r in range(params[k].shape[0]):
+            value = params[k][r].copy()
+            params[k][r] = value + eps
+            loss1 = forward_pass_loss(params)
+            params[k][r] = value - eps
+            loss2 = forward_pass_loss(params)
+            params[k][r] = value
+            # Compute numerical gradient
+            params['grad_' + k][r] = (loss1 - loss2) / (2*eps)
 
 total_error = 0
 for k in params.keys():
     if 'grad_' in k:
         # relative error
-        err = np.abs(params[k] - params_orig[k])/np.maximum(np.abs(params[k]),np.abs(params_orig[k]))
+        err = np.abs(params[k] - params_orig[k])/np.maximum(np.abs(params[k]), np.abs(params_orig[k]))
         err = err.sum()
         print('{} {:.2e}'.format(k, err))
         total_error += err
