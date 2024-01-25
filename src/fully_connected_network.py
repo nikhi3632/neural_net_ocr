@@ -85,8 +85,7 @@ learning_rate = 1e-3
 for itr in range(max_iters):
     total_loss = 0
     avg_acc = 0
-    for xb,yb in batches:
-        pass
+    for xb, yb in batches:
         # forward
         h1 = forward(xb, params, 'layer1')
         probs = forward(h1, params, 'output', softmax)
@@ -126,7 +125,7 @@ def forward_pass_loss(params):
 
 # get the same result with numerical gradients
 eps = 1e-6
-for k,v in params.items():
+for k, v in params.items():
     if '_' in k: 
         continue
     # There is a real parameter!
