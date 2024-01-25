@@ -33,8 +33,8 @@ assert(params['W' + 'layer1'].shape == (2,25))
 assert(params['b' + 'layer1'].shape == (25,))
 
 #expect 0, [0.05 to 0.12]
-print("{}, {:.2f}".format(params['blayer1'].sum(), params['W' + 'layer1'].std()**2))
-print("{}, {:.2f}".format(params['boutput'].sum(), params['W' + 'output'].std()**2))
+# print("{}, {:.2f}".format(params['b' + 'layer1'].sum(), params['W' + 'layer1'].std()**2))
+# print("{}, {:.2f}".format(params['b' + 'output'].sum(), params['W' + 'output'].std()**2))
 
 # implement sigmoid
 test = sigmoid(np.array([-1000, 1000]))
