@@ -107,19 +107,11 @@ for itr in range(max_iters):
     if itr % 100 == 0:
         print("itr: {:02d} \t loss: {:.2f} \t acc : {:.2f}".format(itr, total_loss, avg_acc))
 
-# Do a forward & backward pass of the dataset here to get params populated with the gradient expected
-xb, yb = batches[0]
-out = forward(xb, params, "layer1", sigmoid)
-probs = forward(out, params, "output", softmax)
-loss, acc = compute_loss_and_acc(yb, probs)
-delta = probs - yb
-delta1 = backwards(delta, params, "output", linear_deriv)
-delta2 = backwards(delta1, params, "layer1", sigmoid_deriv)
-
 # save the old params and the gradients that are just computed
 params_orig = copy.deepcopy(params)
 
-# Gradient obtained from Backpropagation
+# Do a forward & backward pass of the dataset here to get params populated with the gradient expected
+# can be done before or after training
 h1 = forward(x, params_orig, 'layer1', sigmoid)
 probs = forward(h1, params_orig, 'output', softmax)
 delta1 = probs - y
