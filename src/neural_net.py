@@ -30,8 +30,8 @@ def forward(X, params, name = '', activation = sigmoid):
     # get the layer parameters
     W = params['W' + name]
     b = params['b' + name]
-    pre_act = np.dot(X, W) + b
-    post_act = activation(pre_act)
+    pre_act = np.dot(X, W) + b #XW + b
+    post_act = activation(pre_act) #f(XW + b)
     # store the pre-activation and post-activation values to use in backprop
     params['cache_' + name] = (X, pre_act, post_act)
     return post_act
@@ -43,17 +43,15 @@ def softmax(x):
     return exp_x / np.sum(exp_x, axis=1, keepdims=True)
 
 # compute total loss and accuracy
-# y is size [examples,classes]
-# probs is size [examples,classes]
+# y is size [examples, classes]
+# probs is size [examples, classes]
 def compute_loss_and_acc(y, probs):
     examples = y.shape[0]
     # Calculate cross-entropy loss
     epsilon = 1e-10
-    loss = -np.sum(y * np.log(probs + epsilon)) / examples
+    loss = -np.sum(y * np.log(probs+ epsilon))
     # Calculate accuracy
-    predicted_labels = np.argmax(probs, axis=1)
-    correct_predictions = np.sum(np.equal(predicted_labels, np.argmax(y, axis=1)))
-    acc = correct_predictions / examples
+    acc = np.sum(np.argmax(y, axis=1) == np.argmax(probs, axis=1)) / examples
     return loss, acc
 
 # it's a function of post_act
@@ -70,16 +68,15 @@ def backwards(delta, params, name = '', activation_deriv = sigmoid_deriv):
     name -- name of the layer
     activation_deriv -- the derivative of the activation_func
     """
-    # everything you may need for this layer
+    # everything needed for this layer
     W = params['W' + name]
     X, _ , post_act = params['cache_' + name]
     # do the derivative through activation first
-    # then compute the derivative W,b, and X
-    examples = delta.shape[0]
-    deriv = activation_deriv(post_act)
-    grad_W = np.dot(X.T, deriv*delta)
-    grad_X = np.dot(deriv*delta, W.T)
-    grad_b = np.dot(np.ones((1, examples)), deriv*delta).flatten()
+    # then compute the derivative W, b, and X
+    act_deriv = activation_deriv(post_act) * delta
+    grad_W = X.T @ act_deriv                      # in_size x out_size, d/dW(f*(XW + b))
+    grad_b = np.ones(len(act_deriv)) @ act_deriv  # 1 x out_size, d/db(f*(XW + b))
+    grad_X = act_deriv @ W.T                      # d/dX(f*(XW + b))
     # store the gradients
     params['grad_W' + name] = grad_W
     params['grad_b' + name] = grad_b
