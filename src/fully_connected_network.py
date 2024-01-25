@@ -124,6 +124,10 @@ def forward_pass_loss(params):
     return loss
 
 # get the same result with numerical gradients
+# Instead of using theanalytical gradients computed from the chain rule.
+# Add epsilon offset to each element in the weights, and compute the numerical gradient of the loss with central differences. 
+# Central differences is just f(x + eps)−f(x - eps)/(2*eps).
+# This needs to be done for each scalar dimension in all of the weights independently.
 eps = 1e-6
 for k, v in params.items():
     if '_' in k: 
