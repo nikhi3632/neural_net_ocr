@@ -7,7 +7,7 @@ import copy
 import warnings
 warnings.filterwarnings('ignore')
 import numpy as np
-np.random.seed(42)
+np.random.seed(0)
 
 # Generate fake data
 g0 = np.random.multivariate_normal([3.6, 40],[[0.05, 0],[0, 10]], 10)

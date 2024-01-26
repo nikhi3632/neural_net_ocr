@@ -33,7 +33,7 @@ batch_size = 32
 learning_rate = 1e-2
 hidden_size = 64
 
-batches = get_random_batches(train_x,train_y,batch_size)
+batches = get_random_batches(train_x, train_y, batch_size)
 batch_num = len(batches)
 
 params = {}
@@ -101,20 +101,20 @@ for itr in range(max_iters):
     if itr % 2 == 0:
         print("itr: {:02d} \t loss: {:.2f} \t acc : {:.2f}".format(itr, total_loss, total_acc))
 
-plt.plot(x, train_acc_list, linewidth=3, label="Training Accuracy")
-plt.plot(x, valid_acc_list, linewidth=3, label="Validation Accuracy")
+plt.plot(x, train_acc_list, linewidth = 3, label = "Training Accuracy")
+plt.plot(x, valid_acc_list, linewidth = 3, label = "Validation Accuracy")
 plt.legend()
-plt.title("Accuracy Over Training")
+plt.title("Accuracy")
 plt.xlabel("Epoch")
 plt.ylabel("Accuracy")
 plt.savefig(ARTIFACTS_DIR + "/accuracy_plot.png")
 plt.close()
 
 # Plotting Loss
-plt.plot(x, train_loss_list, linewidth=3, label="Training Loss")
-plt.plot(x, valid_loss_list, linewidth=3, label="Validation Loss")
+plt.plot(x, train_loss_list, linewidth = 3, label = "Training Loss")
+plt.plot(x, valid_loss_list, linewidth = 3, label = "Validation Loss")
 plt.legend()
-plt.title("Loss Over Training")
+plt.title("Loss")
 plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.savefig(ARTIFACTS_DIR + "/loss_plot.png")
@@ -122,22 +122,22 @@ plt.close()
 
 # run on validation set and report accuracy!
 valid_acc = None
-out = forward(valid_x, params, "layer1", sigmoid)
-probs = forward(out, params, "output", softmax)
-_, valid_acc = compute_loss_and_acc(valid_y, probs)
+valid_out = forward(valid_x, params, "layer1", sigmoid)
+valid_probs = forward(valid_out, params, "output", softmax)
+_, valid_acc = compute_loss_and_acc(valid_y, valid_probs)
 
 print('Validation accuracy: ', valid_acc)
 
 test_acc = None
-out = forward(test_x, params, "layer1", sigmoid)
-probs = forward(out, params, "output", softmax)
-_, test_acc = compute_loss_and_acc(test_y, probs)
+test_out = forward(test_x, params, "layer1", sigmoid)
+test_probs = forward(test_out, params, "output", softmax)
+_, test_acc = compute_loss_and_acc(test_y, test_probs)
 
 print('Test accuracy: ', test_acc)
 
-saved_params = {k:v for k,v in params.items() if '_' not in k}
+saved_params = {k:v for k, v in params.items() if '_' not in k}
 with open(ARTIFACTS_DIR + '/model_weights.pickle', 'wb') as handle:
-    pickle.dump(saved_params, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    pickle.dump(saved_params, handle, protocol = pickle.HIGHEST_PROTOCOL)
 
 visualize_weights(params['W' + 'layer1'], ARTIFACTS_DIR + '/learned_weights.png')
 
@@ -145,16 +145,16 @@ valid_acc = None
 out = forward(valid_x, params, "layer1", sigmoid)
 probs = forward(out, params, "output", softmax)
 _, valid_acc = compute_loss_and_acc(valid_y, probs)
-confusion_matrix = np.zeros((train_y.shape[1],train_y.shape[1]))
+confusion_matrix = np.zeros((train_y.shape[1], train_y.shape[1]))
 valid_pred_y = np.argmax(probs, axis = 1)
 for i in range(valid_pred_y.shape[0]):
     pred = valid_pred_y[i]
     label = np.argmax(valid_y[i])
     confusion_matrix[label][pred] += 1
 
-plt.imshow(confusion_matrix,interpolation='nearest')
+plt.imshow(confusion_matrix, interpolation='nearest')
 plt.grid(True)
-plt.xticks(np.arange(36),string.ascii_uppercase[:26] + ''.join([str(_) for _ in range(10)]))
-plt.yticks(np.arange(36),string.ascii_uppercase[:26] + ''.join([str(_) for _ in range(10)]))
+plt.xticks(np.arange(36), string.ascii_uppercase[:26] + ''.join([str(_) for _ in range(10)]))
+plt.yticks(np.arange(36), string.ascii_uppercase[:26] + ''.join([str(_) for _ in range(10)]))
 plt.savefig(ARTIFACTS_DIR + '/confusion_matrix')
 plt.close()

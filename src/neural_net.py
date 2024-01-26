@@ -1,4 +1,5 @@
 import numpy as np
+np.random.seed(0)
 
 # initialize b to 0 vector
 # b should be a 1D array, not a 2D array with a singleton dimension
