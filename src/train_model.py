@@ -141,12 +141,8 @@ with open(ARTIFACTS_DIR + '/model_weights.pickle', 'wb') as handle:
 
 visualize_weights(params['W' + 'layer1'], ARTIFACTS_DIR + '/learned_weights.png')
 
-valid_acc = None
-out = forward(valid_x, params, "layer1", sigmoid)
-probs = forward(out, params, "output", softmax)
-_, valid_acc = compute_loss_and_acc(valid_y, probs)
 confusion_matrix = np.zeros((train_y.shape[1], train_y.shape[1]))
-valid_pred_y = np.argmax(probs, axis = 1)
+valid_pred_y = np.argmax(valid_probs, axis = 1)
 for i in range(valid_pred_y.shape[0]):
     pred = valid_pred_y[i]
     label = np.argmax(valid_y[i])
