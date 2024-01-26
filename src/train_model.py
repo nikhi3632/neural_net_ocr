@@ -101,6 +101,7 @@ for itr in range(max_iters):
     if itr % 2 == 0:
         print("itr: {:02d} \t loss: {:.2f} \t acc : {:.2f}".format(itr, total_loss, total_acc))
 
+# Plotting Accuracy
 plt.plot(x, train_acc_list, linewidth = 3, label = "Training Accuracy")
 plt.plot(x, valid_acc_list, linewidth = 3, label = "Validation Accuracy")
 plt.legend()
@@ -141,7 +142,7 @@ with open(ARTIFACTS_DIR + '/model_weights.pickle', 'wb') as handle:
 
 visualize_weights(params['W' + 'layer1'], ARTIFACTS_DIR + '/learned_weights.png')
 
-confusion_matrix = np.zeros((train_y.shape[1], train_y.shape[1]))
+confusion_matrix = np.zeros((valid_y.shape[1], valid_y.shape[1]))
 valid_pred_y = np.argmax(valid_probs, axis = 1)
 for i in range(valid_pred_y.shape[0]):
     pred = valid_pred_y[i]
