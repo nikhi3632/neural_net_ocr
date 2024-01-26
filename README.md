@@ -1,1 +1,1 @@
-# WIP
+# Neural Networks for Optical Character Recognition
