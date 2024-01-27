@@ -83,10 +83,6 @@ The `segmentation` module focuses on image segmentation techniques, where the go
 
 The `skimage.segmentation` module in scikit-image provides functions related to image segmentation, which involves dividing an image into meaningful regions. Let's explore a couple of important functions from this module:
 
-###  `mark_boundaries`:
+- `mark_boundaries` is a function used to mark the boundaries of labeled regions in an image. It overlays colored boundaries on the original image to visualize the segmented regions.
 
-`mark_boundaries` is a function used to mark the boundaries of labeled regions in an image. It overlays colored boundaries on the original image to visualize the segmented regions.
-
-### `clear_border`:
-
-`clear_border` is a function used to clear objects touching the image border. It removes connected components that touch the border of the image, helping to eliminate artifacts or objects that are only partially visible.
+-  `clear_border` is a function used to clear objects touching the image border. It removes connected components that touch the border of the image, helping to eliminate artifacts or objects that are only partially visible.
