@@ -25,6 +25,7 @@ def find_letters(image):
     regions = skimage.measure.regionprops(label_image)
     areas = np.array([region.area for region in regions])
     area_thresh = np.sum(areas) / len(regions) / 3
+    bboxes = []
     for region in regions:
         if region.area >= area_thresh:
             bboxes.append(region.bbox)
