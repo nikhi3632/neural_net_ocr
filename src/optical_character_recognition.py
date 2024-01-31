@@ -16,6 +16,7 @@ import matplotlib.patches as patches
 # returns a list of bounding boxes and black_and_white image
 def find_letters(image):
     # ocr processing here, one idea estimate noise -> denoise -> greyscale -> threshold -> morphology -> label -> skip small boxes
+    # https://scikit-image.org/docs/stable/auto_examples/segmentation/plot_label.html
     sigma = skimage.restoration.estimate_sigma(image, average_sigmas=True, channel_axis=-1) # estimate noise
     image = skimage.filters.gaussian(image, sigma=sigma, channel_axis=-1) # Gaussian denoising
     image = skimage.color.rgb2gray(image) # Greyscale
