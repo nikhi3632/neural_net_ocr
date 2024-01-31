@@ -7,6 +7,8 @@ import skimage.restoration
 import skimage.filters
 import skimage.morphology
 import skimage.segmentation
+import matplotlib
+matplotlib.use('agg') 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
