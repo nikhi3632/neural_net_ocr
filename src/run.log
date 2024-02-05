@@ -1,0 +1,78 @@
+Running fully_connected_network.py...
+should be zero and one	 0.0 1.0
+Wlayer1 (2, 25) (2, 25)
+Woutput (25, 4) (25, 4)
+blayer1 (25,) (25,)
+boutput (4,) (4,)
+itr: 00 	 loss: 57.02 	 acc : 0.38
+itr: 100 	 loss: 40.43 	 acc : 0.65
+itr: 200 	 loss: 33.42 	 acc : 0.65
+itr: 300 	 loss: 28.96 	 acc : 0.70
+itr: 400 	 loss: 25.97 	 acc : 0.77
+grad_Woutput 7.45e-07
+grad_boutput 2.75e-09
+grad_Wlayer1 1.05e-06
+grad_blayer1 4.78e-07
+total 2.28e-06
+Running train_model.py...
+itr: 00 	 loss: 3.00 	 acc : 0.20
+itr: 02 	 loss: 1.51 	 acc : 0.58
+itr: 04 	 loss: 1.15 	 acc : 0.68
+itr: 06 	 loss: 0.96 	 acc : 0.73
+itr: 08 	 loss: 0.83 	 acc : 0.77
+itr: 10 	 loss: 0.72 	 acc : 0.80
+itr: 12 	 loss: 0.64 	 acc : 0.82
+itr: 14 	 loss: 0.57 	 acc : 0.84
+itr: 16 	 loss: 0.51 	 acc : 0.86
+itr: 18 	 loss: 0.46 	 acc : 0.87
+itr: 20 	 loss: 0.42 	 acc : 0.89
+itr: 22 	 loss: 0.38 	 acc : 0.90
+itr: 24 	 loss: 0.35 	 acc : 0.91
+itr: 26 	 loss: 0.32 	 acc : 0.92
+itr: 28 	 loss: 0.29 	 acc : 0.93
+itr: 30 	 loss: 0.27 	 acc : 0.94
+itr: 32 	 loss: 0.25 	 acc : 0.94
+itr: 34 	 loss: 0.23 	 acc : 0.95
+itr: 36 	 loss: 0.21 	 acc : 0.95
+itr: 38 	 loss: 0.19 	 acc : 0.96
+itr: 40 	 loss: 0.18 	 acc : 0.96
+itr: 42 	 loss: 0.17 	 acc : 0.97
+itr: 44 	 loss: 0.15 	 acc : 0.97
+itr: 46 	 loss: 0.14 	 acc : 0.97
+itr: 48 	 loss: 0.13 	 acc : 0.98
+Validation accuracy:  0.7327777777777778
+Test accuracy:  0.7516666666666667
+Running optical_character_recognition.py...
+Failed with exception the input array must have size 3 along `channel_axis`, got (1486, 1958, 4) for ../data/images/05_cats_connected_fail.png
+Failed with exception the input array must have size 3 along `channel_axis`, got (1356, 1950, 4) for ../data/images/06_stars_rotated_fail.png
+Testing run_ocr.py...
+T 0 D D L I S T 
+I M A K 6 A T D Z U L I S T 
+2 C H 6 C K Q F F T H E R I R S T 
+T N I N G Q N T Q D Q L I S T 
+3 R L A L I Z B Y Q U H A V B A L R 6 A D T 
+L Q M P L 6 T L D 2 T H I N G S 
+4 R 6 W A R D Y J U R S B L E W I T H 
+A N A P 
+Accuracy: 75.65%
+------------------------------------------------------------
+A B L D 6 F 6 
+H I I K L M N 
+Q P Q R S T U 
+V W X Y Z 
+1 Z 3 4 S 6 7 8 7 J 
+Accuracy: 75.00%
+------------------------------------------------------------
+H A I K U G A R Z H A S T 
+B U T S Q M E T I M E S T H E T J O N T M A K G S G N G E 
+R B G R I G B R R T Q R 
+Accuracy: 72.22%
+------------------------------------------------------------
+C F B P L L A R N I K G 
+D E B P E R L E A R N I N G 
+D B B P B S T L E A R N I A G 
+Accuracy: 75.61%
+------------------------------------------------------------
+Average Accuracy: 74.62%
+Cleaning up __pycache__...
+DONE!!!
