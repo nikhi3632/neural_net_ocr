@@ -66,6 +66,24 @@ def generate_dataset(rows_, bw_):
         dataset.append(np.array(data_row))
     return dataset
 
+def calculate_accuracy(ground_truth, prediction):
+    if len(ground_truth) != len(prediction):
+        raise ValueError("Input lists must have the same length.")
+
+    correct_count = 0
+    total_count = 0
+
+    for gt_list, pred_list in zip(ground_truth, prediction):
+        if len(gt_list) != len(pred_list):
+            raise ValueError("Each sublist in ground truth and prediction must have the same length.")
+
+        for gt, pred in zip(gt_list, pred_list):
+            total_count += 1
+            correct_count += gt == pred
+
+    accuracy = correct_count / total_count if total_count != 0 else 0
+    return accuracy
+
 if __name__ == "__main__":
     ARTIFACTS_DIR = os.getcwd() + "/artifacts"
     IMAGE_DIR = '../data/images'
@@ -73,14 +91,14 @@ if __name__ == "__main__":
         img_filename for img_filename in sorted(os.listdir(IMAGE_DIR))
         if any(ext in img_filename for ext in ['.png', '.jpg', '.jpeg']) and 'fail' not in img_filename
     ]
-    ground_truth = [
+    ground_truths = [
         [
             'TODOLIST',
             '1MAKEATODOLIST',
             '2CHECKOFFTHEFIRST',
             'THINGONTODOLIST',
             '3REALIZEYOUHAVEALREADY',
-            'COMPLETEDTWOTHINGS',
+            'COMPLETED2THINGS',
             '4REWARDYOURSELFWITH',
             'ANAP'
         ],
@@ -95,7 +113,7 @@ if __name__ == "__main__":
             'HAIKUSAREEASY',
             'BUTSOMETIMESTHEYDONTMAKESENSE',
             'REFRIGERATOR'
-        ]
+        ],
         [
             'DEEPLEARNING',
             'DEEPERLEARNING',
@@ -103,7 +121,8 @@ if __name__ == "__main__":
         ]
     ]
     predictions = []
-    for img_filename in PASS_IMAGES:
+    accuracies = []
+    for idx, img_filename in enumerate(PASS_IMAGES):
         img_path = os.path.join(IMAGE_DIR, img_filename)
         im = skimage.img_as_float(skimage.io.imread(os.path.join(img_path)))
         bboxes, bw = find_letters(im)
@@ -117,7 +136,7 @@ if __name__ == "__main__":
         # run the crops through the neural network and print the outputs
         letters = np.array([_ for _ in string.ascii_uppercase[:26]] + [str(_) for _ in range(10)])
         params = pickle.load(open(ARTIFACTS_DIR + '/model_weights.pickle','rb'))
-        prediction = []
+        outputs = []
         for row in dataset:
             out = forward(row, params, "layer1", sigmoid)
             probs = forward(out, params, "output", softmax)
@@ -126,7 +145,10 @@ if __name__ == "__main__":
             for pred in predicted:
                 row_pred += (letters[pred] + " ")
             print(row_pred)
-            prediction.append(row_pred.replace(" ", ""))
+            outputs.append(row_pred.replace(" ", ""))
+        predictions.append(outputs)
+        accuracy = calculate_accuracy(ground_truths[idx], predictions[idx])
+        accuracies.append(accuracy)
+        print(f"Accuracy: {accuracy * 100:.2f}%")
         print("-" * 60)
-        predictions.append(prediction)
-    print(predictions)
+    print(f"Average Accuracy: {np.mean(accuracies) * 100:.2f}%")
