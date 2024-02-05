@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import skimage # v0.20.0
+import skimage.io
 import skimage.measure
 import skimage.color
 import skimage.restoration
@@ -38,7 +39,7 @@ def find_letters(image):
 if __name__ == "__main__":
     ARTIFACTS_DIR = os.getcwd() + "/artifacts"
     IMAGE_DIR = '../data/images'
-    for img_filename in os.listdir(IMAGE_DIR):
+    for img_filename in sorted(os.listdir(IMAGE_DIR)):
         try:
             img_path = os.path.join(IMAGE_DIR, img_filename)
             if os.path.isfile(img_path) and img_filename.lower().endswith(('.png', '.jpg', '.jpeg')):
