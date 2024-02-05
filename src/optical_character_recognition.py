@@ -22,7 +22,7 @@ def find_letters(image):
     image = skimage.filters.gaussian(image, sigma=sigma, channel_axis=-1) # Gaussian denoising
     image = skimage.color.rgb2gray(image) # Greyscale
     threshold = skimage.filters.threshold_otsu(image) # Threshold
-    bw = skimage.morphology.closing(image < threshold, skimage.morphology.square(10)) # Morphology closing
+    bw = skimage.morphology.closing(image < threshold, skimage.morphology.square(5)) # Morphology closing
     clear = skimage.segmentation.clear_border(bw) # Remove border artifacts
     label_image, _ = skimage.measure.label(clear, background=0, return_num=True, connectivity=2) # Label connected components
     # Filter regions and skip small boxes
