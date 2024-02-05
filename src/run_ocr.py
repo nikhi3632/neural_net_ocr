@@ -79,7 +79,7 @@ def calculate_accuracy(ground_truth, prediction):
 
         for gt, pred in zip(gt_list, pred_list):
             total_count += 1
-            correct_count += gt == pred
+            correct_count += (gt == pred)
 
     accuracy = correct_count / total_count if total_count != 0 else 0
     return accuracy
