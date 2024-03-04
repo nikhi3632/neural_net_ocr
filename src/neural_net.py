@@ -31,8 +31,8 @@ def forward(X, params, name = '', activation = sigmoid):
     # get the layer parameters
     W = params['W' + name]
     b = params['b' + name]
-    pre_act = np.dot(X, W) + b #XW + b
-    post_act = activation(pre_act) #f(XW + b)
+    pre_act = np.dot(X, W) + b # XW + b
+    post_act = activation(pre_act) # f(XW + b)
     # store the pre-activation and post-activation values to use in backprop
     params['cache_' + name] = (X, pre_act, post_act)
     return post_act
@@ -74,10 +74,10 @@ def backwards(delta, params, name = '', activation_deriv = sigmoid_deriv):
     X, _ , post_act = params['cache_' + name]
     # do the derivative through activation first
     # then compute the derivative W, b, and X
-    act_deriv = activation_deriv(post_act) * delta
-    grad_W = X.T @ act_deriv                      # in_size x out_size, d/dW(f*(XW + b))
-    grad_b = np.ones(len(act_deriv)) @ act_deriv  # 1 x out_size, d/db(f*(XW + b))
-    grad_X = act_deriv @ W.T                      # d/dX(f*(XW + b))
+    act_deriv = activation_deriv(post_act) * delta # post_act = f(XW + b)
+    grad_W = X.T @ act_deriv                       # in_size x out_size, d/dW(f(XW + b))
+    grad_b = np.ones(len(act_deriv)) @ act_deriv   # 1 x out_size, d/db(f(XW + b))
+    grad_X = act_deriv @ W.T                       # d/dX(f(XW + b))
     # store the gradients
     params['grad_W' + name] = grad_W
     params['grad_b' + name] = grad_b
