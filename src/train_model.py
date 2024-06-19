@@ -39,10 +39,14 @@ batch_num = len(batches)
 params = {}
 
 # initialize layers here
-n_input_layer = train_x.shape[1]
-n_output_layer = train_y.shape[1]
-initialize_weights(n_input_layer, hidden_size, params, 'layer1')
-initialize_weights(hidden_size, n_output_layer, params, 'output')
+n_input_layer = train_x.shape[1] # train_x shape -> (10800, 1024)
+n_output_layer = train_y.shape[1] # train_y shape -> (10800, 36)
+# 10800 training samples
+# The input to the network is a set of images. Each image is flattened into a 1D array.
+# For this dataset, each image has 32x32 pixels, so the input layer size is 32x32=1024.
+# The output layer has as many neurons as there are classes in the dataset. 
+# For the NIST36 dataset, there are 36 classes (26 letters + 10 digits), 
+# so the output layer size is 36.
 
 def visualize_weights(W, save_path):
     assert W.shape == (32 * 32, 64)
